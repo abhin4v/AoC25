@@ -5,6 +5,8 @@ pkgs.mkShell {
     janet
     jpm
     cljfmt
+    hyperfine
+    pkg-config
   ];
 
   shellHook = ''
