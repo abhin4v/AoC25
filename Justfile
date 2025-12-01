@@ -6,6 +6,26 @@ janet_libpath :=  `pkg-config --libs-only-L janet | cut -c 3-`
 @default:
     just --list
 
+# Create a new day file with template
+new day:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    d="{{ day }}"
+    if [ -f "day${d}.janet" ]; then
+        echo "day${d}.janet already exists"
+        exit 1
+    fi
+    cp _template.janet "day${d}.janet"
+    sed -i.bak "s/dayN/day${d}/g" "day${d}.janet"
+    rm -f "day${d}.janet.bak"
+    touch "inputs/${d}.txt"
+    touch "examples/${d}.txt"
+    echo "" >> project.janet
+    echo "(declare-executable" >> project.janet
+    echo "  :name \"day${d}\"" >> project.janet
+    echo "  :entry \"day${d}.janet\")" >> project.janet
+    echo "Created day${d}.janet, inputs/${d}.txt, examples/${d}.txt, and project.janet entry"
+
 # Run day N with example input
 example day:
     janet day{{ day }}.janet examples/{{ day }}.txt
