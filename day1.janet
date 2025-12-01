@@ -12,7 +12,11 @@
       (error "no matches"))))
 
 (defn wrap-position [pos]
-  (% (+ (% pos 100) 100) 100))
+  (cond
+    (zero? pos) 0
+    (zero? (% pos 100)) 0
+    (pos? pos) (% pos 100)
+    (neg? pos) (+ (% pos 100) 100)))
 
 (defn move-dial [position {:dir direction :steps steps}]
   (wrap-position
@@ -33,13 +37,13 @@
   (var current start-position)
   (var zero-crossings 0)
   (each move moves
-        (let [{:dir direction :steps steps} move]
-          (let [steps-to-zero (if (= direction "L") current (- 100 current))]
-            (when (>= steps steps-to-zero)
-              (set zero-crossings
-                   (+ zero-crossings
-                      (+ (if (pos? steps-to-zero) 1 0) (div (- steps steps-to-zero) 100)))))
-            (set current (move-dial current move)))))
+        (let [{:dir direction :steps steps} move
+              steps-to-zero (if (= direction "L") current (- 100 current))]
+          (when (>= steps steps-to-zero)
+            (set zero-crossings
+                 (+ zero-crossings
+                    (+ (if (pos? steps-to-zero) 1 0) (div (- steps steps-to-zero) 100)))))
+          (set current (move-dial current move))))
   zero-crossings)
 
 (defn main [& args]
