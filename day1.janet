@@ -1,3 +1,6 @@
+(def base-path (os/getenv "AOC_INPUT_PATH"))
+(def input-path (string base-path "/1.txt"))
+
 (def pattern-captured
   '(some (sequence (capture (choice "L" "R"))
                    (number (some :d))
@@ -47,7 +50,6 @@
   zero-crossings)
 
 (defn main [& _]
-  (def input-path (string (os/getenv "AOC_INPUT_PATH") "/1.txt"))
   (def content (slurp input-path))
   (def moves (parse-moves content))
   (print "Part 1 - Count of 0s: " (apply-moves-1 moves 50))

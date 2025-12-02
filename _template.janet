@@ -1,3 +1,6 @@
+(def base-path (os/getenv "AOC_INPUT_PATH"))
+(def input-path (string base-path "/N.txt"))
+
 (defn parse-input [content]
   (string/split "\n" content))
 
@@ -8,7 +11,6 @@
   nil)
 
 (defn main [& _]
-  (def input-path (string (os/getenv "AOC_INPUT_PATH") "/N.txt"))
   (def content (slurp input-path))
   (def input (parse-input content))
   (print "Part 1: " (part-1 input))

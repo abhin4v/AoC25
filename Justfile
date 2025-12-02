@@ -38,7 +38,7 @@ run day:
 run-all:
     #!/usr/bin/env bash
     set -euo pipefail
-    ls -1 day*.janet | cut -d. -f1 | cut -c4- | xargs just run
+    ls -1 day*.janet | cut -d. -f1 | cut -c4- | xargs -I {} just run {}
 
 # Benchmark day N
 bench day compiled="0":
