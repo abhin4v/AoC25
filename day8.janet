@@ -18,15 +18,51 @@
        (let [d (- (in a i) (in b i))] (+= sum (* d d))))
   sum)
 
-(defn point-pairs [points]
+(defn heap-sift-down [heap idx]
+  (def count (length heap))
+  (var cur-idx idx)
+  (var done false)
+  (while (not done)
+    (def left-idx (+ (* cur-idx 2) 1))
+    (def right-idx (+ (* cur-idx 2) 2))
+    (var largest-idx cur-idx)
+    (when (< left-idx count)
+      (when (> (in (in heap left-idx) 2) (in (in heap largest-idx) 2))
+        (set largest-idx left-idx)))
+    (when (< right-idx count)
+      (when (> (in (in heap right-idx) 2) (in (in heap largest-idx) 2))
+        (set largest-idx right-idx)))
+    (if (= largest-idx cur-idx)
+      (set done true)
+      (do
+        (let [tmp (in heap cur-idx)]
+          (put heap cur-idx (in heap largest-idx))
+          (put heap largest-idx tmp))
+        (set cur-idx largest-idx)))))
+
+(defn max-heapify [heap]
+  (for i (math/floor (/ (- (length heap) 1) 2)) -1 -1
+       (heap-sift-down heap i)))
+
+(defn point-pairs [points k]
   (def count (length points))
-  (var pairs (array/new (/ (* count (dec count)) 2)))
+  (var heap @[])
+
   (for i 0 count
        (for j (inc i) count
             (let [p1 (in points i)
-                  p2 (in points j)]
-              (array/push pairs [p1 p2 (distance p1 p2)]))))
-  (sort pairs | (< (in $0 2) (in $1 2))))
+                  p2 (in points j)
+                  dist (distance p1 p2)]
+              (if (< (length heap) k)
+                (do
+                  (array/push heap [p1 p2 dist])
+                  (when (= (length heap) k)
+                    (max-heapify heap)))
+                (when (< dist (in (in heap 0) 2))
+                  (put heap 0 [p1 p2 dist])
+                  (heap-sift-down heap 0))))))
+
+  (sort heap |(< (in $0 2) (in $1 2))))
 
 (def disjoint-set-prototype
   @{:find (fn [self i]
@@ -93,6 +129,6 @@
 (defn main [& _]
   (def content (slurp input-path))
   (def points (parse-input content))
-  (def pairs (point-pairs points))
+  (def pairs (point-pairs points 5500))
   (print "Part 1: " (part-1 pairs))
   (print "Part 2: " (part-2 points pairs)))
