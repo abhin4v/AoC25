@@ -46,11 +46,9 @@
           (set current (move-dial current move))))
   zero-crossings)
 
-(defn main [& args]
-  (when (< (length args) 2)
-    (error "Usage: janet day1.janet <filename>"))
-  (def filename (get args 1))
-  (def content (slurp filename))
+(defn main [& _]
+  (def input-path (string (os/getenv "AOC_INPUT_PATH") "/1.txt"))
+  (def content (slurp input-path))
   (def moves (parse-moves content))
   (print "Part 1 - Count of 0s: " (apply-moves-1 moves 50))
   (print "Part 2 - Times crossing 0: " (apply-moves-2 moves 50)))

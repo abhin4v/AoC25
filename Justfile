@@ -1,6 +1,6 @@
 set shell := ["bash", "-c"]
 
-janet_libpath :=  `pkg-config --libs-only-L janet | cut -c 3-`
+janet_libpath := `pkg-config --libs-only-L janet | cut -c 3-`
 
 # Show available commands
 @default:
@@ -28,11 +28,11 @@ new day:
 
 # Run day N with example input
 example day:
-    janet day{{ day }}.janet examples/{{ day }}.txt
+    AOC_INPUT_PATH=examples janet day{{ day }}.janet
 
 # Run day N with actual input
 run day:
-    janet day{{ day }}.janet inputs/{{ day }}.txt
+    AOC_INPUT_PATH=inputs janet day{{ day }}.janet
 
 # Run all days with actual input
 run-all:
@@ -45,28 +45,29 @@ bench day compiled="0":
     #!/usr/bin/env bash
     set -euo pipefail
     if [ "{{ compiled }}" != "0" ]; then
-        just build
-        cmd="./build/day{{ day }} inputs/{{ day }}.txt"
+        just build inputs
+        cmd="./build/day{{ day }}"
     else
-        cmd="janet day{{ day }}.janet inputs/{{ day }}.txt"
+        cmd="janet day{{ day }}.janet"
     fi
-    hyperfine --warmup 25 -N "$cmd"
+    AOC_INPUT_PATH=inputs hyperfine --warmup 25 -N "$cmd"
 
 # Benchmark all days
 bench-all compiled="0":
     #!/usr/bin/env bash
     set -euo pipefail
+    export AOC_INPUT_PATH=inputs
     if [ "{{ compiled }}" != "0" ]; then
-        just build
+        just build inputs
         ls -1 day*.janet \
           | cut -d. -f1 \
           | cut -c4- \
-          | xargs -I {} bash -c 'hyperfine --warmup 25 -N "./build/day{} inputs/{}.txt"'
+          | xargs -I {} bash -c 'hyperfine --warmup 25 -N "./build/day{}"'
     else
         ls -1 day*.janet \
           | cut -d. -f1 \
           | cut -c4- \
-          | xargs -I {} bash -c 'hyperfine --warmup 25 -N "janet day{}.janet inputs/{}.txt"'
+          | xargs -I {} bash -c 'hyperfine --warmup 25 -N "janet day{}.janet"'
     fi
 
 # Format day N
@@ -78,16 +79,16 @@ fmt-all:
     cljfmt fix day*.janet
 
 # Build all executables
-build:
-    JANET_LIBPATH={{ janet_libpath }} jpm build
+build path:
+    AOC_INPUT_PATH={{ path }} JANET_LIBPATH={{ janet_libpath }} jpm build
 
 # Run day N executable with example input
-example-exec day: build
-    ./build/day{{ day }} examples/{{ day }}.txt
+example-exec day: (build "examples")
+    AOC_INPUT_PATH=examples ./build/day{{ day }}
 
 # Run day N executable with actual input
-run-exec day: build
-    ./build/day{{ day }} inputs/{{ day }}.txt
+run-exec day: (build "inputs")
+    AOC_INPUT_PATH=inputs ./build/day{{ day }}
 
 # Clean build artifacts
 clean:
