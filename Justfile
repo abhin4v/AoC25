@@ -106,6 +106,10 @@ clean:
     jpm clean
     rm -f day*.jimage
 
-# Open Janet REPL
-repl:
-    janet
+# Open Janet REPL for day N
+repl day:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cat ./janet-completions > /tmp/janet-completions-day{{ day }}
+    janet -e "(do (import ./day{{ day }}) (each x (sort (all-bindings)) (let [s (string x)] (print (string/replace \"day{{ day }}/\" \"\" s) \"\n\"))))" >> /tmp/janet-completions-day{{ day }}
+    rlwrap --always-readline -f /tmp/janet-completions-day{{ day }} janet -l ./day{{ day }}
