@@ -8,14 +8,20 @@
   (sort matches)
   (tuple/slice matches))
 
+(defmacro in-range? [n & _]
+  (def base-path (os/getenv "AOC_INPUT_PATH"))
+  (def input-path (string base-path "/2.txt"))
+  (def ranges (parse-input (slurp input-path)))
+  (def result @['or])
+  (each [s e] ranges
+    (array/push result ~(<= ,s ,n ,e)))
+  (tuple/slice result))
+
 (defn multiple-digits [n k digit-power]
   (var sum 0)
   (for i 0 k
        (set sum (+ (* digit-power sum) n)))
   sum)
-
-(defn in-range? [n ranges]
-  (some (fn [[s e]] (<= s n e)) ranges))
 
 (defn part-1 [input]
   (def limit (last (last input)))
