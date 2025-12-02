@@ -1,10 +1,11 @@
 (def base-path (os/getenv "AOC_INPUT_PATH"))
 (def input-path (string base-path "/2.txt"))
 
-(def input-peg (peg/compile ~{:main (sequence :ranges -1)
-                               :ranges (some :range)
-                               :range (group (sequence (number :num) "-" (number :num) (opt ",")))
-                               :num (some :d)}))
+(def input-peg
+  (peg/compile ~{:main (sequence :ranges -1)
+                 :ranges (some :range)
+                 :range (group (sequence (number :num) "-" (number :num) (opt ",")))
+                 :num (some :d)}))
 
 (defn parse-input [content]
   (var matches (map tuple/slice (peg/match input-peg content)))
@@ -13,10 +14,7 @@
 
 (defmacro in-range? [n & _]
   (def ranges (parse-input (slurp input-path)))
-  (def result @['or])
-  (each [s e] ranges
-        (array/push result ~(<= ,s ,n ,e)))
-  (tuple/slice result))
+  ~(or ,;(map (fn [[s e]] ~(<= ,s ,n ,e)) ranges)))
 
 (defn multiple-digits [n k digit-power]
   (var sum 0)
