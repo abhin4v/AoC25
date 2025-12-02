@@ -14,7 +14,7 @@
   (def ranges (parse-input (slurp input-path)))
   (def result @['or])
   (each [s e] ranges
-    (array/push result ~(<= ,s ,n ,e)))
+        (array/push result ~(<= ,s ,n ,e)))
   (tuple/slice result))
 
 (defn multiple-digits [n k digit-power]
