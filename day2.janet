@@ -1,7 +1,10 @@
+(def base-path (os/getenv "AOC_INPUT_PATH"))
+(def input-path (string base-path "/2.txt"))
+
 (def input-peg (peg/compile ~{:main (sequence :ranges -1)
-                              :ranges (some :range)
-                              :range (group (sequence (number :num) "-" (number :num) (opt ",")))
-                              :num (some :d)}))
+                               :ranges (some :range)
+                               :range (group (sequence (number :num) "-" (number :num) (opt ",")))
+                               :num (some :d)}))
 
 (defn parse-input [content]
   (var matches (map tuple/slice (peg/match input-peg content)))
@@ -9,8 +12,6 @@
   (tuple/slice matches))
 
 (defmacro in-range? [n & _]
-  (def base-path (os/getenv "AOC_INPUT_PATH"))
-  (def input-path (string base-path "/2.txt"))
   (def ranges (parse-input (slurp input-path)))
   (def result @['or])
   (each [s e] ranges
@@ -59,7 +60,6 @@
   sum)
 
 (defn main [& _]
-  (def input-path (string (os/getenv "AOC_INPUT_PATH") "/2.txt"))
   (def content (slurp input-path))
   (def input (parse-input content))
   (print "Part 1: " (part-1 input))
