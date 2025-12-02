@@ -9,3 +9,7 @@
 (declare-executable
   :name "day1"
   :entry "day1.janet")
+
+(declare-executable
+  :name "day2"
+  :entry "day2.janet")

@@ -7,6 +7,7 @@ pkgs.mkShell {
     cljfmt
     hyperfine
     pkg-config
+    rlwrap
   ];
 
   shellHook = ''
