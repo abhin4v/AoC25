@@ -16,7 +16,7 @@ new day:
         exit 1
     fi
     cp _template.janet "day${d}.janet"
-    sed -i.bak "s/dayN/day${d}/g" "day${d}.janet"
+    sed -i.bak "s/dayN/day${d}/g; s|/N\.txt|/${d}.txt|g" "day${d}.janet"
     rm -f "day${d}.janet.bak"
     touch "inputs/${d}.txt"
     touch "examples/${d}.txt"
