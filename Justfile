@@ -18,13 +18,24 @@ new day:
     cp _template.janet "day${d}.janet"
     sed -i.bak "s/dayN/day${d}/g; s|/N\.txt|/${d}.txt|g" "day${d}.janet"
     rm -f "day${d}.janet.bak"
+    cp _template_test.janet "test/day${d}.janet"
+    sed -i.bak "s/dayN/day${d}/g; s/N\.txt/${d}.txt/g" "test/day${d}.janet"
+    rm -f "test/day${d}.janet.bak"
     touch "inputs/${d}.txt"
     touch "examples/${d}.txt"
     echo "" >> project.janet
     echo "(declare-executable" >> project.janet
     echo "  :name \"day${d}\"" >> project.janet
     echo "  :entry \"day${d}.janet\")" >> project.janet
-    echo "Created day${d}.janet, inputs/${d}.txt, examples/${d}.txt, and project.janet entry"
+    echo "Created day${d}.janet, test/day${d}.janet, inputs/${d}.txt, examples/${d}.txt, and project.janet entry"
+
+# Run tests for day N
+test day:
+    AOC_INPUT_PATH=examples janet test/day{{ day }}.janet
+
+# Run all tests
+test-all: (build "examples")
+    AOC_INPUT_PATH=examples jpm test
 
 # Run day N with example input
 example day:
