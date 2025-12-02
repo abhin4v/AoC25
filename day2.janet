@@ -52,11 +52,9 @@
     (++ multiple))
   sum)
 
-(defn main [& args]
-  (when (< (length args) 2)
-    (error "Usage: janet day2.janet <filename>"))
-  (def filename (get args 1))
-  (def content (slurp filename))
+(defn main [& _]
+  (def input-path (string (os/getenv "AOC_INPUT_PATH") "/2.txt"))
+  (def content (slurp input-path))
   (def input (parse-input content))
   (print "Part 1: " (part-1 input))
   (print "Part 2: " (part-2 input)))
