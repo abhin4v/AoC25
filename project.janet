@@ -21,3 +21,7 @@
 (declare-executable
   :name "day4"
   :entry "day4.janet")
+
+(declare-executable
+  :name "day5"
+  :entry "day5.janet")
