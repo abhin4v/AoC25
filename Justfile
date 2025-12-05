@@ -29,17 +29,34 @@ new day:
     echo "  :entry \"day${d}.janet\")" >> project.janet
     echo "Created day${d}.janet, test/day${d}.janet, inputs/${d}.txt, examples/${d}.txt, and project.janet entry"
 
-# Run tests for day N
-test day:
-    AOC_INPUT_PATH=examples janet test/day{{ day }}.janet
+# Build all executables
+build path:
+    AOC_INPUT_PATH={{ path }} JANET_LIBPATH={{ janet_libpath }} jpm build
 
-# Run all tests
-test-all: (build "examples")
-    AOC_INPUT_PATH=examples jpm test
+# Clean build artifacts
+clean:
+    jpm clean
+    rm -f day*.jimage
+
+# Generate Janet completions
+completions:
+    janet -e "(each x (sort (all-bindings)) (print x \"\n\"))" > janet-completions
+
+# Format day N
+fmt day:
+    cljfmt fix day{{ day }}.janet
+
+# Format all solution files
+fmt-all:
+    cljfmt fix day*.janet
 
 # Run day N with example input
 example day:
     AOC_INPUT_PATH=examples janet day{{ day }}.janet
+
+# Run day N executable with example input
+example-exec day: (build "examples")
+    AOC_INPUT_PATH=examples ./build/day{{ day }}
 
 # Run day N with actual input
 run day:
@@ -50,6 +67,22 @@ run-all:
     #!/usr/bin/env bash
     set -euo pipefail
     ls -1 day*.janet | cut -d. -f1 | cut -c4- | xargs -I {} just run {}
+
+# Run day N executable with actual input
+run-exec day: (build "inputs")
+    AOC_INPUT_PATH=inputs ./build/day{{ day }}
+
+# Run tests for day N
+test day:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "running test/day{{ day }}.janet ..."
+    AOC_INPUT_PATH=examples janet test/day{{ day }}.janet
+    echo "All tests passed."
+
+# Run all tests
+test-all: (build "examples")
+    AOC_INPUT_PATH=examples jpm test
 
 # Benchmark day N
 bench day compiled="0":
@@ -80,31 +113,6 @@ bench-all compiled="0":
           | cut -c4- \
           | xargs -I {} bash -c 'hyperfine --warmup 25 -N "janet day{}.janet"'
     fi
-
-# Format day N
-fmt day:
-    cljfmt fix day{{ day }}.janet
-
-# Format all solution files
-fmt-all:
-    cljfmt fix day*.janet
-
-# Build all executables
-build path:
-    AOC_INPUT_PATH={{ path }} JANET_LIBPATH={{ janet_libpath }} jpm build
-
-# Run day N executable with example input
-example-exec day: (build "examples")
-    AOC_INPUT_PATH=examples ./build/day{{ day }}
-
-# Run day N executable with actual input
-run-exec day: (build "inputs")
-    AOC_INPUT_PATH=inputs ./build/day{{ day }}
-
-# Clean build artifacts
-clean:
-    jpm clean
-    rm -f day*.jimage
 
 # Open Janet REPL for day N
 repl day:
