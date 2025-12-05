@@ -35,5 +35,5 @@
 (defn main [& _]
   (def content (slurp input-path))
   (def input (parse-input content))
-  (print (solve 2 input))
-  (print (solve 12 input)))
+  (print "Part 1: " (solve 2 input))
+  (print "Part 2: " (solve 12 input)))

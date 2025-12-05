@@ -1,3 +1,6 @@
 inputs/*.txt
+.envrc
+.direnv
+.DS_Store
 *.jimage
 build
