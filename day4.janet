@@ -36,31 +36,25 @@
   (map (fn [[xn yn]] (get-cell grid xn yn))
        (get-neighbours-indices grid x y)))
 
-(defn part-1 [grid]
+(defn get-accessible-cells [grid]
   (let [{:width width :height height} grid]
-    (var count 0)
-    (loop [x :in (range 0 width)
-           y :in (range 0 height)
-           :when (has-roll? grid x y)
-           :let [n (get-neighbours grid x y)]
-           :when (accessible? n)]
-      (++ count))
-    count))
+    (seq [x :in (range 0 width)
+          y :in (range 0 height)
+          :when (has-roll? grid x y)
+          :let [n (get-neighbours grid x y)]
+          :when (accessible? n)]
+         [x y])))
+
+(defn part-1 [grid] (length (get-accessible-cells grid)))
 
 (defn part-2 [grid]
   (let [{:width width :height height} grid]
     (var count 0)
-    (var queue @[])
+    (var queue (get-accessible-cells grid))
     (var queued @{})
 
-    (loop [x :in (range 0 width)
-           y :in (range 0 height)
-           :when (has-roll? grid x y)
-           :let [n (get-neighbours grid x y)]
-           :when (accessible? n)]
-      (let [key [x y]]
-        (put queued key true)
-        (array/push queue key)))
+    (each key queue
+          (put queued key true))
 
     (while (not (empty? queue))
       (def [x y] (first queue))
