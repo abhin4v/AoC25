@@ -3,37 +3,12 @@
   :description "Advent of Code 2025 Solutions in Janet"
   :author "Abhinav Sarkar"
   :license "MIT"
-  :url "https://code.abhinavsarkar.net/abhin4v/AoC25.git"
+  :url "https://github.com/abhin4v/AoC25.git"
+  :version "0.1.0"
+  :min-version "1.39.0"
   :dependencies [])
 
-(declare-executable
-  :name "day1"
-  :entry "day1.janet")
-
-(declare-executable
-  :name "day2"
-  :entry "day2.janet")
-
-(declare-executable
-  :name "day3"
-  :entry "day3.janet")
-
-(declare-executable
-  :name "day4"
-  :entry "day4.janet")
-
-(declare-executable
-  :name "day5"
-  :entry "day5.janet")
-
-(declare-executable
-  :name "day6"
-  :entry "day6.janet")
-
-(declare-executable
-  :name "day7"
-  :entry "day7.janet")
-
-(declare-executable
-  :name "day8"
-  :entry "day8.janet")
+(loop [day :range [1 9]]
+  (eval ~(declare-executable
+           :name ,(string "day" day)
+           :entry ,(string "day" day ".janet"))))

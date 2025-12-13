@@ -23,11 +23,13 @@ new day:
     rm -f "test/day${d}.janet.bak"
     touch "inputs/${d}.txt"
     touch "examples/${d}.txt"
-    echo "" >> project.janet
-    echo "(declare-executable" >> project.janet
-    echo "  :name \"day${d}\"" >> project.janet
-    echo "  :entry \"day${d}.janet\")" >> project.janet
-    echo "Created day${d}.janet, test/day${d}.janet, inputs/${d}.txt, examples/${d}.txt, and project.janet entry"
+
+    next_day=$((d + 1))
+    sed -i.bak "s/\[1 [0-9]*\]/[1 ${next_day}]/" project.janet
+    rm -f project.janet.bak
+
+    echo "Created day${d}.janet, test/day${d}.janet, inputs/${d}.txt, and examples/${d}.txt"
+    echo "Added executable entry for day ${d} in project.janet"
 
 # Build all executables
 build path:
