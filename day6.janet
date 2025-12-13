@@ -3,12 +3,12 @@
 
 (defn input-peg [num-entry-pattern]
   (peg/compile
-   ~{:main (sequence :num-rows :op-row -1)
-     :num-rows (group (some :num-row))
-     :num-row (group (sequence (some :num-entry) "\n"))
+   ~{:main      (sequence :num-rows :op-row -1)
+     :num-rows  (group (some :num-row))
+     :num-row   (group (sequence (some :num-entry) "\n"))
      :num-entry ,num-entry-pattern
-     :op-row (group (some (sequence :op (opt (some :s)))))
-     :op (choice (replace "*" :mult) (replace "+" :add))}))
+     :op-row    (group (some (sequence :op (opt (some :s)))))
+     :op        (choice (replace "*" :mult) (replace "+" :add))}))
 
 (defn parse-input [content num-entry-pattern]
   (let [[num-rows op-row] (peg/match (input-peg num-entry-pattern) content)]

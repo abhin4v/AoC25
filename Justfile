@@ -44,11 +44,11 @@ completions:
 
 # Format day N
 fmt day:
-    cljfmt fix day{{ day }}.janet
+    cljfmt fix day{{ day }}.janet --align-form-columns --align-map-columns
 
 # Format all solution files
 fmt-all:
-    cljfmt fix day*.janet
+    cljfmt fix day*.janet --align-form-columns --align-map-columns
 
 # Run day N with example input
 example day:

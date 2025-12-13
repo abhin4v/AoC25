@@ -40,13 +40,13 @@
   (var current start-position)
   (var zero-crossings 0)
   (each move moves
-        (let [{:dir direction :steps steps} move
-              steps-to-zero (if (= direction "L") current (- 100 current))]
-          (when (>= steps steps-to-zero)
-            (set zero-crossings
-                 (+ zero-crossings
-                    (+ (if (pos? steps-to-zero) 1 0) (div (- steps steps-to-zero) 100)))))
-          (set current (move-dial current move))))
+        (let [{:dir direction :steps steps} move]
+          (let [steps-to-zero (if (= direction "L") current (- 100 current))]
+            (when (>= steps steps-to-zero)
+              (set zero-crossings
+                   (+ zero-crossings
+                      (+ (if (pos? steps-to-zero) 1 0) (div (- steps steps-to-zero) 100)))))
+            (set current (move-dial current move)))))
   zero-crossings)
 
 (defn main [& _]

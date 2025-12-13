@@ -3,12 +3,12 @@
 
 (def input-peg
   (peg/compile
-   ~{:main (sequence :ranges "\n" :ids -1)
+   ~{:main   (sequence :ranges "\n" :ids -1)
      :ranges (group (some :range))
-     :range (group (sequence (number :num) "-" (number :num) (opt "\n")))
-     :ids (group (some :id))
-     :id (sequence (number :num) (opt "\n"))
-     :num (some :d)}))
+     :range  (group (sequence (number :num) "-" (number :num) (opt "\n")))
+     :ids    (group (some :id))
+     :id     (sequence (number :num) (opt "\n"))
+     :num    (some :d)}))
 
 (defn merge-ranges [ranges]
   (if (empty? ranges)
@@ -31,7 +31,7 @@
                   sorted
                   merge-ranges
                   tuple/slice)
-     :ids (tuple/slice ids)}))
+     :ids    (tuple/slice ids)}))
 
 (defn fresh? [ranges n]
   (some (fn [[s e]] (<= s n e)) ranges))

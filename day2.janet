@@ -2,10 +2,10 @@
 (def input-path (string base-path "/2.txt"))
 
 (def input-peg
-  (peg/compile ~{:main (sequence :ranges -1)
+  (peg/compile ~{:main   (sequence :ranges -1)
                  :ranges (some :range)
-                 :range (group (sequence (number :num) "-" (number :num) (opt ",")))
-                 :num (some :d)}))
+                 :range  (group (sequence (number :num) "-" (number :num) (opt ",")))
+                 :num    (some :d)}))
 
 (defn parse-input [content]
   (var matches (map tuple/slice (peg/match input-peg content)))

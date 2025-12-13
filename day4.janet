@@ -6,8 +6,8 @@
                    (string/split "\n")
                    (filter (complement empty?))
                    (map (fn [line] (map |(match $ 46 :empty 64 :roll) line))))]
-    {:cells cells
-     :width (length (first cells))
+    {:cells  cells
+     :width  (length (first cells))
      :height (length cells)}))
 
 (defn get-cell [grid x y]
@@ -62,12 +62,13 @@
       (set-cell grid x y :empty)
       (++ count)
 
-      (loop [[xn yn] :in (get-neighbours-indices grid x y)
-             :when (has-roll? grid xn yn)
-             :let [key [xn yn]]
-             :when (not (queued key))
-             :let [n (get-neighbours grid xn yn)]
-             :when (accessible? n)]
+      (loop [[xn yn]
+             :in     (get-neighbours-indices grid x y)
+             :when   (has-roll? grid xn yn)
+             :let    [key [xn yn]]
+             :when   (not (queued key))
+             :let    [n (get-neighbours grid xn yn)]
+             :when   (accessible? n)]
         (put queued key true)
         (array/push queue key)))
 
