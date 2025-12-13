@@ -8,7 +8,7 @@
   :min-version "1.39.0"
   :dependencies [])
 
-(loop [day :range [1 9]]
+(loop [day :range [1 10]]
   (eval ~(declare-executable
            :name ,(string "day" day)
            :entry ,(string "day" day ".janet"))))
