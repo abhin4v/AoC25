@@ -63,13 +63,20 @@ run day:
     AOC_INPUT_PATH=inputs janet day{{ day }}.janet
 
 # Run all days with actual input
-run-all:
+run-all compiled="0":
     #!/usr/bin/env bash
     set -euo pipefail
-    ls -1 day*.janet | cut -d. -f1 | cut -c4- | xargs -I {} just run {}
+    export AOC_INPUT_PATH=inputs
+    if [ "{{ compiled }}" != "0" ]; then
+        just clean
+        just build inputs
+        ls -1 day*.janet | cut -d. -f1 | cut -c4- | xargs -I {} bash -c 'echo "Running day {}"; ./build/day{}'
+    else
+      ls -1 day*.janet | cut -d. -f1 | cut -c4- | xargs -I {} just run {}
+    fi
 
 # Run day N executable with actual input
-run-exec day: (build "inputs")
+run-exec day: clean (build "inputs")
     AOC_INPUT_PATH=inputs ./build/day{{ day }}
 
 # Run tests for day N
@@ -85,10 +92,11 @@ test-all: (build "examples")
     AOC_INPUT_PATH=examples jpm test
 
 # Benchmark day N
-bench day compiled="0":
+bench day compiled="0": clean
     #!/usr/bin/env bash
     set -euo pipefail
     if [ "{{ compiled }}" != "0" ]; then
+        just clean
         just build inputs
         cmd="./build/day{{ day }}"
     else
@@ -102,6 +110,7 @@ bench-all compiled="0":
     set -euo pipefail
     export AOC_INPUT_PATH=inputs
     if [ "{{ compiled }}" != "0" ]; then
+        just clean
         just build inputs
         ls -1 day*.janet \
           | cut -d. -f1 \
