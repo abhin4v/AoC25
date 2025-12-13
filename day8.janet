@@ -4,8 +4,8 @@
 (def input-peg
   (peg/compile
    ~{:main (sequence (some :row) -1)
-     :row (group (sequence (some :num) (opt "\n")))
-     :num (sequence (number :d+) (opt ","))}))
+     :row  (group (sequence (some :num) (opt "\n")))
+     :num  (sequence (number :d+) (opt ","))}))
 
 (defn parse-input [content]
   (->> (peg/match input-peg content)
@@ -50,8 +50,8 @@
 
   (for i 0 count
        (for j (inc i) count
-            (let [p1 (in points i)
-                  p2 (in points j)
+            (let [p1   (in points i)
+                  p2   (in points j)
                   dist (distance p1 p2)]
               (if (< (length heap) k)
                 (do
@@ -65,14 +65,14 @@
   (sort heap |(< (in $0 2) (in $1 2))))
 
 (def disjoint-set-prototype
-  @{:find (fn [self i]
-            (def parents (self :parents))
-            (let [parent (get parents i)]
-              (if (not (= (get parents parent) parent))
-                (let [root (:find self parent)]
-                  (put parents i root)
-                  root)
-                parent)))
+  @{:find  (fn [self i]
+             (def parents (self :parents))
+             (let [parent (get parents i)]
+               (if (not (= (get parents parent) parent))
+                 (let [root (:find self parent)]
+                   (put parents i root)
+                   root)
+                 parent)))
 
     :union (fn [self i j]
              (def parents (self :parents))
@@ -80,8 +80,8 @@
              (let [i-root (:find self i)
                    j-root (:find self j)]
                (when (not (= i-root j-root))
-                 (let [i-size (in sizes i-root)
-                       j-size (in sizes j-root)
+                 (let [i-size  (in sizes i-root)
+                       j-size  (in sizes j-root)
                        ij-size (+ i-size j-size)]
                    (if (< i-size j-size)
                      (do
@@ -96,8 +96,8 @@
 
 (defn new-disjoint-set [nodes]
   (table/setproto
-   @{:parents (reduce (fn [acc node] (put acc node node)) @{} nodes)
-     :sizes (reduce (fn [acc node] (put acc node 1)) @{} nodes)
+   @{:parents  (reduce (fn [acc node] (put acc node node)) @{} nodes)
+     :sizes    (reduce (fn [acc node] (put acc node 1)) @{} nodes)
      :max-size 1}
    disjoint-set-prototype))
 

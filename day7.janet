@@ -4,7 +4,7 @@
 (def input-peg
   (peg/compile
    ~{:main (sequence (some :row) -1)
-     :row (group (sequence (some :cell) (opt "\n")))
+     :row  (group (sequence (some :cell) (opt "\n")))
      :cell (choice (replace "." :empty)
                    (replace "^" :splitter)
                    (replace "S" :start))}))
